@@ -13,5 +13,11 @@ class App < Sinatra::Base
         erb :index
     end
 
+    get '/item/:id' do |id|
+        @iteminfo = db.execute("SELECT * FROM items WHERE id = ?", id).first
+        @sizeinfo = db.execute("SELECT * FROM stock_size WHERE item_id = ?", id).first
+        @sizelist = db.execute("SELECT * FROM size_id")
+        erb :info
+    end
     
 end

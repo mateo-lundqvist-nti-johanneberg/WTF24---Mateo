@@ -1,12 +1,19 @@
+<h1 id="title">OXYS CLOTHES</h1>
+<h1> LOGIN </h1>
+<br>
+<br>
+<br>
 <div class="items">
     <%@items.each do |item|%>
-        <div class="wrapitems">
-            <%imglink = item["image"]%>
-            <%name = item["name"]%>
-            <%price = item["price"]%>
-            <img src="<%=imglink%>" width="500" height="600"></img>
-            <h2><%=name%></h2>
-            <h2><%=price%>kr</h2>
-        </div>
+        <a href="http://localhost:9292/item/<%=item["id"]%>">
+            <div class="wrapitems">
+                <%imglink = item["image"]%>
+                <%name = item["name"]%>
+                <%price = item["price"]%>
+                <img src="<%=imglink%>" width="500" height="600"></img>
+                <h2><%=name%></h2>
+                <h2><%=price%>kr</h2>
+            </div>
+        </a>
     <%end%>
 </div>

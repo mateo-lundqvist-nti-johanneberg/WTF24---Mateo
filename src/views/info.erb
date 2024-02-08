@@ -1,0 +1,11 @@
+<img src="<%=@iteminfo["image"]%>" width="500" height="600"></img>
+<p>pick size</p>
+<form action="/info" method = "POST">
+    <label for ="size">size</label>
+    <select name="size" id="size">
+        <option value="S">S</option>
+        <option value="M">M</option>
+        <option value="L">L</option>
+    </select>
+    <button type="submit">submit</button>
+</form>
