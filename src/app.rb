@@ -14,10 +14,19 @@ class App < Sinatra::Base
     end
 
     get '/item/:id' do |id|
-        @iteminfo = db.execute("SELECT * FROM items WHERE id = ?", id).first
-        @sizeinfo = db.execute("SELECT * FROM stock_size WHERE item_id = ?", id).first
-        @sizelist = db.execute("SELECT * FROM size_id")
+        query = "SELECT * FROM items 
+                 INNER JOIN stock_size
+                 ON stock_size.item_id = items.id 
+                 INNER JOIN size_id 
+                 ON stock_size.size_id = size_id.id 
+                 WHERE items.id = ?"
+        @items = db.execute(query, id)
         erb :info
     end
-    
+
+    post '/info/:id' do |id|
+        size_picked = params["size"]
+        userid = 1
+        item = 
+    end
 end

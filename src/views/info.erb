@@ -1,11 +1,12 @@
-<img src="<%=@iteminfo["image"]%>" width="500" height="600"></img>
+<img src="<%=@items.first["image"]%>" width="500" height="600"></img>
 <p>pick size</p>
-<form action="/info" method = "POST">
+<form action="/info/<%intepoleringwla%>" method = "POST">
     <label for ="size">size</label>
     <select name="size" id="size">
-        <option value="S">S</option>
-        <option value="M">M</option>
-        <option value="L">L</option>
+        <%@items.each do |item|%>
+            <option value=<%=item["size_id"]%>><%=item["name"]%></option>
+        <%end%>
     </select>
-    <button type="submit">submit</button>
+    <button type="submit">Add to cart</button>
 </form>
+
