@@ -1,6 +1,6 @@
 <img src="<%=@items.first["image"]%>" width="500" height="600"></img>
 <p>pick size</p>
-<form action="/info/<%intepoleringwla%>" method = "POST">
+<form action="/info/<%=@items.first["id"]%>" method = "POST">
     <label for ="size">size</label>
     <select name="size" id="size">
         <%@items.each do |item|%>
