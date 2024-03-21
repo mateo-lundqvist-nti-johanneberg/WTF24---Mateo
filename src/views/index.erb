@@ -1,5 +1,12 @@
 <h1 id="title">OXYS CLOTHES</h1>
-<h1> LOGIN </h1>
+<%if session[:username]%>
+    <form action="/logout" method="post">
+        <input type="submit" value="LOGOUT">
+    </form>
+<%else%>
+    <a href="/login"> LOGIN</a>
+    <a href="/register"> REGISTER</a>
+<%end%>
 <br>
 <br>
 <br>

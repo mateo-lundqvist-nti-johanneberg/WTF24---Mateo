@@ -16,8 +16,43 @@ class App < Sinatra::Base
         erb :index
     end
 
-    get '/login' do
-        erb :login
+    get '/login' do 
+        error_message = session.delete(:error_message)
+
+        erb :login, locals: { error_message: error_message }
+    end
+
+    post '/login' do 
+        username = params["username"]
+        password = params["password"]
+    
+        user = db.execute('SELECT * FROM users WHERE name = ?', username).first
+
+        if user.nil?
+            session[:error_message] = "User is not found"
+            redirect "/login"
+        end
+    
+        stored_password_hash = user['pass']
+    
+        if BCrypt::Password.new(stored_password_hash) == password
+            session[:id] = user['id'] 
+            session[:username] = username
+            session[:role] = user['role']
+
+            redirect "/"
+
+        else 
+            session[:error_message] = "Password is incorrect"
+            redirect '/login'        
+        end
+
+        
+    end
+
+    post '/logout' do
+        session.clear
+        redirect "/"
     end
 
     get '/register' do
@@ -44,8 +79,7 @@ class App < Sinatra::Base
         role = "admin"
 
         begin
-            query = 'INSERT INTO use
-            ghrs (name, mail, address, phone, pass, role) VALUES (?, ?, ?, ?, ?, ?)'
+            query = 'INSERT INTO users (name, mail, address, phone, pass, role) VALUES (?, ?, ?, ?, ?, ?)'
             result = db.execute(query, username, mail, address, phone, password_hash, role).first
         rescue SQLite3::ConstraintException => e
             session[:error_message] = "Mail is already taken"
@@ -78,7 +112,7 @@ class App < Sinatra::Base
 
     post '/info/:id' do |id|
         size_picked = params["size"].to_i
-        userid = 1
+        userid = session[:id]
         query = "SELECT * FROM items 
                  INNER JOIN stock_size
                  ON stock_size.item_id = items.id 
