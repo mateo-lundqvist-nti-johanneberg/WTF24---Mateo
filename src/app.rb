@@ -120,6 +120,9 @@ class App < Sinatra::Base
                  ON stock_size.size_id = size_id.id 
                  WHERE items.id = ? AND size_id.id = ?"
         @itemselected = db.execute(query, id, size_picked)
-        redirect "#{userid}/cart/"
+        redirect "/cart/#{userid}"
     end
+
+    get '/cart/:id' do |id|
+        erb :cart
 end
