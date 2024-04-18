@@ -7,6 +7,9 @@
     <a href="/login"> LOGIN</a>
     <a href="/register"> REGISTER</a>
 <%end%>
+<%if session[:role] == "admin"%>
+    <a href="/admin"> ADMIN</a>
+<%end%>
 <br>
 <br>
 <br>
@@ -22,5 +25,6 @@
                 <h2><%=price%>kr</h2>
             </div>
         </a>
+    </form>
     <%end%>
 </div>

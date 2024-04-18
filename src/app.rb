@@ -99,6 +99,10 @@ class App < Sinatra::Base
 
     end
 
+    get '/admin' do
+
+    end
+
     get '/item/:id' do |id|
         query = "SELECT * FROM items 
                  INNER JOIN stock_size
@@ -110,19 +114,17 @@ class App < Sinatra::Base
         erb :info
     end
 
-    post '/info/:id' do |id|
+    post '/info/:id' do |itemid|
         size_picked = params["size"].to_i
         userid = session[:id]
-        query = "SELECT * FROM items 
-                 INNER JOIN stock_size
-                 ON stock_size.item_id = items.id 
-                 INNER JOIN size_id 
-                 ON stock_size.size_id = size_id.id 
-                 WHERE items.id = ? AND size_id.id = ?"
-        @itemselected = db.execute(query, id, size_picked)
+        query = "INSERT INTO order_info (item_id, size) VALUES (?,?) RETURNING order_id"
+        @itemselected = db.execute(query, itemid, size_picked).first
+        p @itemselected
+        createorder = db.execute("INSERT INTO orders (id, timestamp, user_id) VALUES (?,?,?)", @itemselected["order_id"], 1, userid)
         redirect "/cart/#{userid}"
     end
 
     get '/cart/:id' do |id|
         erb :cart
+    end
 end
