@@ -102,12 +102,12 @@ class App < Sinatra::Base
 
     get '/item/:id' do |id|
         query = "SELECT * FROM items 
-                 INNER JOIN stock_size
-                 ON stock_size.item_id = items.id 
-                 INNER JOIN size_id 
-                 ON stock_size.size_id = size_id.id 
-                 WHERE items.id = ?"
-        @items = db.execute(query, id)
+                 WHERE id = ?"
+        @item = db.execute(query, id).first
+        query = "SELECT * FROM stock_size
+        INNER JOIN size_id 
+        ON stock_size.size_id = size_id.id WHERE stock_size.item_id = ?"
+        @sizes = db.execute(query, id)
         erb :info
     end
 
@@ -146,10 +146,9 @@ class App < Sinatra::Base
         size_picked = params["size"].to_i
         userid = session[:id]
         query = "INSERT INTO order_info (item_id, size) VALUES (?,?) RETURNING order_id"
-        @itemselected = db.execute(query, itemid, size_picked).first
-        p @itemselected
+        itemselected = db.execute(query, itemid, size_picked).first
         time = Time.now.to_s
-        createorder = db.execute("INSERT INTO orders (id, timestamp, user_id) VALUES (?,?,?) RETURNING id", @itemselected["order_id"], time, userid)
+        createorder = db.execute("INSERT INTO orders (id, timestamp, user_id) VALUES (?,?,?) RETURNING id", itemselected["order_id"], time, userid)
         redirect "/cart/#{createorder.first["id"]}"
     end
 
