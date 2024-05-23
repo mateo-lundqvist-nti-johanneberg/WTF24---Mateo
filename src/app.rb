@@ -114,6 +114,31 @@ class App < Sinatra::Base
         erb :info
     end
 
+    get '/item/:id/edit' do |id|
+        query1 = "SELECT * FROM items WHERE id = ?"
+        query2 = "SELECT * FROM stock_size WHERE item_id = ?"
+        @item = db.execute(query1, id)
+        @iteminfo = db.execute(query2, id)
+        erb :edit
+    end
+
+    post '/edititem/:id' do |id|
+        name = params["name"]
+        price = params["price"]
+        amountS = params["amountS"]
+        amountM = params["amountM"]
+        amountL = params["amountL"]
+        query1 = "UPDATE items SET name = ?, price = ? WHERE id = ?"
+        queryS = "UPDATE stock_size SET item_count = ? WHERE item_id = ? AND size_id = 1"
+        queryM = "UPDATE stock_size SET item_count = ? WHERE item_id = ? AND size_id = 2"
+        queryL = "UPDATE stock_size SET item_count = ? WHERE item_id = ? AND size_id = 3"
+        db.execute(query1, name, price, id)
+        db.execute(queryS, amountS, id)
+        db.execute(queryM, amountM, id)
+        db.execute(queryL, amountL, id)
+        redirect "/item/#{id}/edit"
+    end
+
     post '/info/:id' do |itemid|
         size_picked = params["size"].to_i
         userid = session[:id]

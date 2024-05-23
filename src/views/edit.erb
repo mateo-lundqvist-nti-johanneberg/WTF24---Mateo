@@ -1,1 +1,28 @@
 <h1>EDIT ITEM</h1>
+<a href="/">back to menu</a>
+<%item_name = @item.first["name"]%>
+<%item_price = @item.first["price"]%>
+
+<h1><%=item_name%></h1>
+<img src="<%=@item.first["image"]%>" width="500" height="600"></img>
+
+<form action="/edititem/<%=@item.first["id"]%>" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="<%=item_name%>" required><br>
+
+        <label for="price">Price:</label>
+        <input type="text" id="price" name="price" value="<%=item_price%>" required><br>
+
+        <%@iteminfo.each do |item|%>
+            <%if item["size_id"] == 1%>
+                <%sizename = "S"%>
+            <%elsif item["size_id"] == 2%>
+                <%sizename = "M"%>
+            <%else%>
+                <%sizename = "L"%>
+            <%end%>
+            <label for="amount<%=sizename%>">Amount <%=sizename%>:</label>
+            <input type="text" id="amount<%=sizename%>" name="amount<%=sizename%>" value="<%=item["item_count"]%>" required><br>
+        <%end%>
+        <input type="submit" value="Submit edit">
+</form>

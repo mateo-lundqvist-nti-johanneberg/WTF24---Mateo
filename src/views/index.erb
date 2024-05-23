@@ -25,6 +25,14 @@
                 <h2><%=price%>kr</h2>
             </div>
         </a>
-        <a href="http://localhost:9292/item/<%=item["id"]%>/edit">EDIT ITEM</a>
+        <%if session[:role] == "admin"%>
+            <a href="http://localhost:9292/item/<%=item["id"]%>/edit">EDIT ITEM</a>
+        <%end%>
+        <%if session[:role] == "admin"%>
+            <a href="https://localhost:9292/item/<%=item["id"]%>/delete">DELETE ITEM</a>
+        <%end%>
+    <%end%>
+    <%if session[:role] == "admin"%>
+        <a href="/create">CREATE ITEM</a>
     <%end%>
 </div>
