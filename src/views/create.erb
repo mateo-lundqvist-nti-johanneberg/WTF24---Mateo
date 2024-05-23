@@ -1,0 +1,15 @@
+<h1>CREATE ITEM</h1>
+
+<form action="/createitem" method="post" enctype="multipart/form-data">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required><br>
+
+    <label for="price">Price:</label>
+    <input type="text" id="price" name="price" required><br>
+
+    <label for="img">Image:</label>
+    <input id="file" type="file" name="file" required><br>
+
+    <input type="submit" value="Create Item">
+</form>
+

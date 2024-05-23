@@ -1,3 +1,4 @@
+require 'time'
 class App < Sinatra::Base
 
     enable :sessions
@@ -99,10 +100,6 @@ class App < Sinatra::Base
 
     end
 
-    get '/admin' do
-
-    end
-
     get '/item/:id' do |id|
         query = "SELECT * FROM items 
                  INNER JOIN stock_size
@@ -139,17 +136,46 @@ class App < Sinatra::Base
         redirect "/item/#{id}/edit"
     end
 
+    post '/item/:id/delete' do |id|
+        db.execute("DELETE FROM items WHERE id = ?", id)
+        db.execute("DELETE FROM stock_size WHERE item_id = ?", id)
+        redirect "/"
+    end
+
     post '/info/:id' do |itemid|
         size_picked = params["size"].to_i
         userid = session[:id]
         query = "INSERT INTO order_info (item_id, size) VALUES (?,?) RETURNING order_id"
         @itemselected = db.execute(query, itemid, size_picked).first
         p @itemselected
-        createorder = db.execute("INSERT INTO orders (id, timestamp, user_id) VALUES (?,?,?)", @itemselected["order_id"], 1, userid)
-        redirect "/cart/#{userid}"
+        time = Time.now.to_s
+        createorder = db.execute("INSERT INTO orders (id, timestamp, user_id) VALUES (?,?,?) RETURNING id", @itemselected["order_id"], time, userid)
+        redirect "/cart/#{createorder.first["id"]}"
+    end
+
+    get '/create' do
+        erb :create
+    end
+
+    post '/createitem' do
+        name = params["name"]
+        price = params["price"]
+        artwork_file = params["file"]
+        File.open('public/img/' + artwork_file[:filename], "w") do |f|
+            f.write(artwork_file[:tempfile].read)
+        end
+
+        image_path = "/img/" + artwork_file[:filename]
+
+        itemid = db.execute("INSERT INTO items (name, price, image) VALUES (?, ?, ?) RETURNING id", name, price, image_path)
+        db.execute("INSERT INTO stock_size VALUES (?, 1, 0)", itemid.first["id"])
+        db.execute("INSERT INTO stock_size VALUES (?, 2, 0)", itemid.first["id"])
+        db.execute("INSERT INTO stock_size VALUES (?, 3, 0)", itemid.first["id"])
+        redirect '/'
     end
 
     get '/cart/:id' do |id|
+        @order = db.execute("SELECT * FROM orders INNER JOIN order_info ON orders.id = order_info.order_id WHERE orders.id = ? ", id)
         erb :cart
     end
 end

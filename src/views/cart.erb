@@ -1,1 +1,5 @@
-<h1><%=@itemselected%></h1>
+<%order = @order.first%>
+<h1>ORDER ID = <%=order["id"]%></h1>
+<h1>TIMESTAMP = <%=order["timestamp"]%></h1>
+<h1>ITEM ID = <%=order["item_id"]%></h1>
+<h1>size = <%=order["size"]%></h1>

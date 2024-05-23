@@ -29,7 +29,9 @@
             <a href="http://localhost:9292/item/<%=item["id"]%>/edit">EDIT ITEM</a>
         <%end%>
         <%if session[:role] == "admin"%>
-            <a href="https://localhost:9292/item/<%=item["id"]%>/delete">DELETE ITEM</a>
+            <form action="http://localhost:9292/item/<%=item["id"]%>/delete" method="post">
+                <input type="submit" value="DELETE ITEM">
+            </form>
         <%end%>
     <%end%>
     <%if session[:role] == "admin"%>
